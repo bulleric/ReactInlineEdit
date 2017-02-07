@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 const selectInputText = (element, type) => {
-  if (type == "number") return false
   element.setSelectionRange(0, element.value.length);
 }
 
@@ -80,7 +79,6 @@ export default class InlineEdit extends React.Component {
         if (this.state.editing && !prevState.editing) {
           setTimeout(() => {
             inputElem.focus()
-            inputElem.select()
           }, 50);
           selectInputText(inputElem, this.props.type);
 
@@ -153,6 +151,7 @@ export default class InlineEdit extends React.Component {
             const Element = this.props.element || this.props.staticElement;
             return <Element
                 className={this.props.className}
+                onKeyDown={this.startEditing}
                 onClick={this.startEditing}
                 tabIndex={this.props.tabIndex}
                 style={this.props.style} >
@@ -168,7 +167,6 @@ export default class InlineEdit extends React.Component {
                       className={this.props.activeClassName}
                       defaultValue={this.state.text}
                       onChange={this.textChanged}
-                      onFocus={this.select()}
                       type={this.state.type}
                       style={this.props.style}
                       step={this.props.step}

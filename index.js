@@ -23,7 +23,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var selectInputText = function selectInputText(element, type) {
-    if (type == "number") return false;
+    // if (type == "number") return false
     element.setSelectionRange(0, element.value.length);
 };
 
@@ -116,7 +116,6 @@ var InlineEdit = function (_React$Component) {
             if (this.state.editing && !prevState.editing) {
                 setTimeout(function () {
                     inputElem.focus();
-                    inputElem.select();
                 }, 50);
                 selectInputText(inputElem, this.props.type);
             } else if (this.state.editing && prevProps.text != this.props.text) {
@@ -145,6 +144,7 @@ var InlineEdit = function (_React$Component) {
                     _Element,
                     {
                         className: this.props.className,
+                        onKeyDown: this.startEditing,
                         onClick: this.startEditing,
                         tabIndex: this.props.tabIndex,
                         style: this.props.style },
@@ -160,7 +160,6 @@ var InlineEdit = function (_React$Component) {
                     className: this.props.activeClassName,
                     defaultValue: this.state.text,
                     onChange: this.textChanged,
-                    onFocus: this.select(),
                     type: this.state.type,
                     style: this.props.style,
                     step: this.props.step,
