@@ -23,7 +23,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var selectInputText = function selectInputText(element, type) {
-    // if (type == "number") return false
+    if (type == "number") return false;
     element.setSelectionRange(0, element.value.length);
 };
 
@@ -129,8 +129,6 @@ var InlineEdit = function (_React$Component) {
 
             if (this.props.isDisabled) {
                 var Element = this.props.element || this.props.staticElement;
-                console.log("IS DISABLED");
-                console.log(this);
                 return _react2.default.createElement(
                     Element,
                     {
@@ -162,8 +160,7 @@ var InlineEdit = function (_React$Component) {
                     onChange: this.textChanged,
                     type: this.state.type,
                     style: this.props.style,
-                    step: this.props.step,
-                    min: this.props.mnin,
+                    step: this.props.stepSize,
                     ref: function ref(input) {
                         _this2.nameInput = input;
                     } });
@@ -192,8 +189,7 @@ InlineEdit.propTypes = {
     editing: _react2.default.PropTypes.bool,
     type: _react2.default.PropTypes.string,
     format: _react2.default.PropTypes.func,
-    step: _react2.default.PropTypes.integer,
-    min: _react2.default.PropTypes.integer
+    stepSize: _react2.default.PropTypes.integer
 };
 InlineEdit.defaultProps = {
     minLength: 0,
@@ -206,7 +202,6 @@ InlineEdit.defaultProps = {
     type: "text",
     placeholder: 0,
     step: 0,
-    min: 1,
     format: function format(text) {
         return text;
     }

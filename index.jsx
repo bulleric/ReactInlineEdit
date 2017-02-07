@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 const selectInputText = (element, type) => {
+  if (type == "number") return false
   element.setSelectionRange(0, element.value.length);
 }
 
@@ -24,8 +25,7 @@ export default class InlineEdit extends React.Component {
         editing: React.PropTypes.bool,
         type: React.PropTypes.string,
         format: React.PropTypes.func,
-        step: React.PropTypes.integer,
-        min: React.PropTypes.integer
+        stepSize: React.PropTypes.integer,
     };
 
     static defaultProps = {
@@ -39,7 +39,6 @@ export default class InlineEdit extends React.Component {
         type: "text",
         placeholder: 0,
         step: 0,
-        min: 1,
         format: text => text
     };
 
@@ -140,8 +139,6 @@ export default class InlineEdit extends React.Component {
     render() {
         if (this.props.isDisabled) {
           const Element = this.props.element || this.props.staticElement;
-          console.log("IS DISABLED")
-          console.log(this)
           return <Element
               className={this.props.className}
               style={this.props.style} >
@@ -169,8 +166,7 @@ export default class InlineEdit extends React.Component {
                       onChange={this.textChanged}
                       type={this.state.type}
                       style={this.props.style}
-                      step={this.props.step}
-                      min={this.props.mnin}
+                      step={this.props.stepSize}
                       ref={(input) => { this.nameInput = input; }} />);
         }
     }
