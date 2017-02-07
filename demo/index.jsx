@@ -33,7 +33,9 @@ class MyParentComponent extends React.Component {
               text={this.state.message}
               paramName="message"
               change={this.dataChanged}
-              type="text"
+              type="number"
+              step="1"
+              min="1"
               style={{
                 backgroundColor: 'yellow',
                 minWidth: 150,

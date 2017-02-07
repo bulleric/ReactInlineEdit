@@ -8,7 +8,7 @@ const selectInputText = (element, type) => {
 
 export default class InlineEdit extends React.Component {
     static propTypes = {
-        text: React.PropTypes.string.isRequired,
+        text: React.PropTypes.any.isRequired,
         paramName: React.PropTypes.string.isRequired,
         change: React.PropTypes.func.isRequired,
         placeholder: React.PropTypes.string,
@@ -23,18 +23,25 @@ export default class InlineEdit extends React.Component {
         tabIndex: React.PropTypes.number,
         isDisabled: React.PropTypes.bool,
         editing: React.PropTypes.bool,
-        type: React.PropTypes.string
+        type: React.PropTypes.string,
+        format: React.PropTypes.func,
+        step: React.PropTypes.integer,
+        min: React.PropTypes.integer
     };
 
     static defaultProps = {
-        minLength: 1,
+        minLength: 0,
         maxLength: 256,
         editingElement: 'input',
         staticElement: 'span',
         tabIndex: 0,
         isDisabled: false,
         editing: false,
-        type: "text"
+        type: "text",
+        placeholder: 0,
+        step: 0,
+        min: 1,
+        format: text => text
     };
 
     state = {
@@ -73,6 +80,7 @@ export default class InlineEdit extends React.Component {
         if (this.state.editing && !prevState.editing) {
           setTimeout(() => {
             inputElem.focus()
+            inputElem.select()
           }, 50);
           selectInputText(inputElem, this.props.type);
 
@@ -134,6 +142,8 @@ export default class InlineEdit extends React.Component {
     render() {
         if (this.props.isDisabled) {
           const Element = this.props.element || this.props.staticElement;
+          console.log("IS DISABLED")
+          console.log(this)
           return <Element
               className={this.props.className}
               style={this.props.style} >
@@ -146,7 +156,7 @@ export default class InlineEdit extends React.Component {
                 onClick={this.startEditing}
                 tabIndex={this.props.tabIndex}
                 style={this.props.style} >
-                {this.state.text || this.props.placeholder}
+                {this.props.format(this.state.text) || this.props.placeholder}
             </Element>;
         } else {
             const Element = this.props.element || this.props.editingElement;
@@ -158,8 +168,11 @@ export default class InlineEdit extends React.Component {
                       className={this.props.activeClassName}
                       defaultValue={this.state.text}
                       onChange={this.textChanged}
+                      onFocus={this.select()}
                       type={this.state.type}
                       style={this.props.style}
+                      step={this.props.step}
+                      min={this.props.mnin}
                       ref={(input) => { this.nameInput = input; }} />);
         }
     }

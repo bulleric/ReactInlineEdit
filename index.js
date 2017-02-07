@@ -116,6 +116,7 @@ var InlineEdit = function (_React$Component) {
             if (this.state.editing && !prevState.editing) {
                 setTimeout(function () {
                     inputElem.focus();
+                    inputElem.select();
                 }, 50);
                 selectInputText(inputElem, this.props.type);
             } else if (this.state.editing && prevProps.text != this.props.text) {
@@ -129,6 +130,8 @@ var InlineEdit = function (_React$Component) {
 
             if (this.props.isDisabled) {
                 var Element = this.props.element || this.props.staticElement;
+                console.log("IS DISABLED");
+                console.log(this);
                 return _react2.default.createElement(
                     Element,
                     {
@@ -145,7 +148,7 @@ var InlineEdit = function (_React$Component) {
                         onClick: this.startEditing,
                         tabIndex: this.props.tabIndex,
                         style: this.props.style },
-                    this.state.text || this.props.placeholder
+                    this.props.format(this.state.text) || this.props.placeholder
                 );
             } else {
                 var _Element2 = this.props.element || this.props.editingElement;
@@ -157,8 +160,11 @@ var InlineEdit = function (_React$Component) {
                     className: this.props.activeClassName,
                     defaultValue: this.state.text,
                     onChange: this.textChanged,
+                    onFocus: this.select(),
                     type: this.state.type,
                     style: this.props.style,
+                    step: this.props.step,
+                    min: this.props.mnin,
                     ref: function ref(input) {
                         _this2.nameInput = input;
                     } });
@@ -170,7 +176,7 @@ var InlineEdit = function (_React$Component) {
 }(_react2.default.Component);
 
 InlineEdit.propTypes = {
-    text: _react2.default.PropTypes.string.isRequired,
+    text: _react2.default.PropTypes.any.isRequired,
     paramName: _react2.default.PropTypes.string.isRequired,
     change: _react2.default.PropTypes.func.isRequired,
     placeholder: _react2.default.PropTypes.string,
@@ -185,16 +191,25 @@ InlineEdit.propTypes = {
     tabIndex: _react2.default.PropTypes.number,
     isDisabled: _react2.default.PropTypes.bool,
     editing: _react2.default.PropTypes.bool,
-    type: _react2.default.PropTypes.string
+    type: _react2.default.PropTypes.string,
+    format: _react2.default.PropTypes.func,
+    step: _react2.default.PropTypes.integer,
+    min: _react2.default.PropTypes.integer
 };
 InlineEdit.defaultProps = {
-    minLength: 1,
+    minLength: 0,
     maxLength: 256,
     editingElement: 'input',
     staticElement: 'span',
     tabIndex: 0,
     isDisabled: false,
     editing: false,
-    type: "text"
+    type: "text",
+    placeholder: 0,
+    step: 0,
+    min: 1,
+    format: function format(text) {
+        return text;
+    }
 };
 exports.default = InlineEdit;
