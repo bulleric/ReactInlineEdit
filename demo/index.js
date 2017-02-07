@@ -76,11 +76,11 @@
 	  function MyParentComponent(props) {
 	    _classCallCheck(this, MyParentComponent);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(MyParentComponent).call(this, props));
+	    var _this = _possibleConstructorReturn(this, (MyParentComponent.__proto__ || Object.getPrototypeOf(MyParentComponent)).call(this, props));
 
 	    _this.dataChanged = _this.dataChanged.bind(_this);
 	    _this.state = {
-	      message: 'ReactInline demo'
+	      message: 5000
 	    };
 	    return _this;
 	  }
@@ -120,6 +120,7 @@
 	          text: this.state.message,
 	          paramName: 'message',
 	          change: this.dataChanged,
+	          type: 'text',
 	          style: {
 	            backgroundColor: 'yellow',
 	            minWidth: 150,
@@ -146,7 +147,7 @@
 
 	'use strict';
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
@@ -192,15 +193,16 @@
 	    }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 	}
 
-	function selectInputText(element) {
+	var selectInputText = function selectInputText(element, type) {
+	    if (type == "number") return false;
 	    element.setSelectionRange(0, element.value.length);
-	}
+	};
 
 	var InlineEdit = function (_React$Component) {
 	    _inherits(InlineEdit, _React$Component);
 
 	    function InlineEdit() {
-	        var _Object$getPrototypeO;
+	        var _ref;
 
 	        var _temp, _this, _ret;
 
@@ -210,11 +212,12 @@
 	            args[_key] = arguments[_key];
 	        }
 
-	        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(InlineEdit)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.state = {
+	        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = InlineEdit.__proto__ || Object.getPrototypeOf(InlineEdit)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
 	            editing: _this.props.editing,
 	            text: _this.props.text,
 	            minLength: _this.props.minLength,
-	            maxLength: _this.props.maxLength
+	            maxLength: _this.props.maxLength,
+	            type: _this.props.type
 	        }, _this.startEditing = function (e) {
 	            if (_this.props.stopPropagation) {
 	                e.stopPropagation();
@@ -280,10 +283,12 @@
 	    }, {
 	        key: 'componentDidUpdate',
 	        value: function componentDidUpdate(prevProps, prevState) {
-	            var inputElem = _reactDom2.default.findDOMNode(this.refs.input);
+	            var inputElem = this.nameInput;
 	            if (this.state.editing && !prevState.editing) {
-	                inputElem.focus();
-	                selectInputText(inputElem);
+	                setTimeout(function () {
+	                    inputElem.focus();
+	                }, 50);
+	                selectInputText(inputElem, this.props.type);
 	            } else if (this.state.editing && prevProps.text != this.props.text) {
 	                this.finishEditing();
 	            }
@@ -291,6 +296,8 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
+	            var _this2 = this;
+
 	            if (this.props.isDisabled) {
 	                var Element = this.props.element || this.props.staticElement;
 	                return _react2.default.createElement(Element, {
@@ -309,13 +316,15 @@
 	                    onClick: this.clickWhenEditing,
 	                    onKeyDown: this.keyDown,
 	                    onBlur: this.finishEditing,
-	                    className: this.props.activeClassName,
 	                    placeholder: this.props.placeholder,
+	                    className: this.props.activeClassName,
 	                    defaultValue: this.state.text,
-	                    onReturn: this.finishEditing,
 	                    onChange: this.textChanged,
+	                    type: this.state.type,
 	                    style: this.props.style,
-	                    ref: 'input' });
+	                    ref: function ref(input) {
+	                        _this2.nameInput = input;
+	                    } });
 	            }
 	        }
 	    }]);
@@ -338,7 +347,8 @@
 	    staticElement: _react2.default.PropTypes.string,
 	    tabIndex: _react2.default.PropTypes.number,
 	    isDisabled: _react2.default.PropTypes.bool,
-	    editing: _react2.default.PropTypes.bool
+	    editing: _react2.default.PropTypes.bool,
+	    type: _react2.default.PropTypes.string
 	};
 	InlineEdit.defaultProps = {
 	    minLength: 1,
@@ -347,7 +357,8 @@
 	    staticElement: 'span',
 	    tabIndex: 0,
 	    isDisabled: false,
-	    editing: false
+	    editing: false,
+	    type: "text"
 	};
 	exports.default = InlineEdit;
 

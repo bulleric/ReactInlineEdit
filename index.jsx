@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-function selectInputText(element) {
-    element.setSelectionRange(0, element.value.length);
+const selectInputText = (element, type) => {
+  if (type == "number") return false
+  element.setSelectionRange(0, element.value.length);
 }
 
 export default class InlineEdit extends React.Component {
@@ -21,7 +22,8 @@ export default class InlineEdit extends React.Component {
         staticElement: React.PropTypes.string,
         tabIndex: React.PropTypes.number,
         isDisabled: React.PropTypes.bool,
-        editing: React.PropTypes.bool
+        editing: React.PropTypes.bool,
+        type: React.PropTypes.string
     };
 
     static defaultProps = {
@@ -31,7 +33,8 @@ export default class InlineEdit extends React.Component {
         staticElement: 'span',
         tabIndex: 0,
         isDisabled: false,
-        editing: false
+        editing: false,
+        type: "text"
     };
 
     state = {
@@ -39,6 +42,7 @@ export default class InlineEdit extends React.Component {
         text: this.props.text,
         minLength: this.props.minLength,
         maxLength: this.props.maxLength,
+        type: this.props.type,
     };
 
     componentWillMount() {
@@ -65,12 +69,15 @@ export default class InlineEdit extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        let inputElem = ReactDOM.findDOMNode(this.refs.input);
+        let inputElem = this.nameInput;
         if (this.state.editing && !prevState.editing) {
-            inputElem.focus();
-            selectInputText(inputElem);
+          setTimeout(() => {
+            inputElem.focus()
+          }, 50);
+          selectInputText(inputElem, this.props.type);
+
         } else if (this.state.editing && prevProps.text != this.props.text) {
-            this.finishEditing();
+          this.finishEditing();
         }
     }
 
@@ -143,16 +150,17 @@ export default class InlineEdit extends React.Component {
             </Element>;
         } else {
             const Element = this.props.element || this.props.editingElement;
-            return <Element
-                onClick={this.clickWhenEditing}
-                onKeyDown={this.keyDown}
-                onBlur={this.finishEditing}
-                className={this.props.activeClassName}
-                placeholder={this.props.placeholder}
-                defaultValue={this.state.text}
-                onChange={this.textChanged}
-                style={this.props.style}
-                ref="input" />;
+            return(<Element
+                      onClick={this.clickWhenEditing}
+                      onKeyDown={this.keyDown}
+                      onBlur={this.finishEditing}
+                      placeholder={this.props.placeholder}
+                      className={this.props.activeClassName}
+                      defaultValue={this.state.text}
+                      onChange={this.textChanged}
+                      type={this.state.type}
+                      style={this.props.style}
+                      ref={(input) => { this.nameInput = input; }} />);
         }
     }
 }

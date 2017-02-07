@@ -8,7 +8,7 @@ class MyParentComponent extends React.Component {
       super(props);
       this.dataChanged = this.dataChanged.bind(this);
       this.state = {
-        message: 'ReactInline demo'
+        message: 5000
       }
     }
 
@@ -33,6 +33,7 @@ class MyParentComponent extends React.Component {
               text={this.state.message}
               paramName="message"
               change={this.dataChanged}
+              type="text"
               style={{
                 backgroundColor: 'yellow',
                 minWidth: 150,
